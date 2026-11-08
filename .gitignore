@@ -1,0 +1,26 @@
+# Maven
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.metadata/
+
+# macOS
+.DS_Store
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Local application configuration
+src/main/resources/application.properties
+src/main/resources/application-local.properties
