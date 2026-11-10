@@ -1,0 +1,31 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/api/auth/login
+method: POST
+body:
+  type: json
+  content: "{\r\n    \r\n}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{bearer_token}}"
+scripts:
+  - type: afterResponse
+    code: "// Parse the JSON response body\r
+
+      const responseData = pm.response.json();\r
+
+      \r
+
+      // Extract the token value and save it to an environment variable named
+      \"my_token\"\r
+
+      pm.environment.set(\"bearer_token\", responseData.token);\r
+
+      \r
+
+      // Optional: Log it to the Postman Console to verify it worked\r
+
+      console.log(\"Token successfully saved:\", responseData.token);\r\n"
+    language: text/javascript
+order: 2000

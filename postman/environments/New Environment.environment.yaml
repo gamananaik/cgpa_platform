@@ -1,4 +1,6 @@
 name: New Environment
 values:
   - key: bearer_token
+    secret: true
+  - key: ''
     value: ''
