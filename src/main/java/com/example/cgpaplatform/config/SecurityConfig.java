@@ -10,9 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,13 +22,16 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final StudentAuthorizationInterceptor studentAuthorizationInterceptor;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            StudentAuthorizationInterceptor studentAuthorizationInterceptor) {
+            StudentAuthorizationInterceptor studentAuthorizationInterceptor,
+            CorsConfigurationSource corsConfigurationSource) {
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.studentAuthorizationInterceptor = studentAuthorizationInterceptor;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Override
@@ -44,6 +45,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             throws Exception {
 
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .csrf(csrf -> csrf.disable())
 
             .exceptionHandling(ex -> ex
@@ -56,26 +58,22 @@ public class SecurityConfig implements WebMvcConfigurer {
             )
 
             .authorizeHttpRequests(auth -> auth
-
                 .requestMatchers(
                     "/api/auth/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
 
-                // Only ADMIN can create student records
                 .requestMatchers(
                     HttpMethod.POST,
                     "/api/students"
                 ).hasRole("ADMIN")
 
-                // Only ADMIN can view all students
                 .requestMatchers(
                     HttpMethod.GET,
                     "/api/students"
                 ).hasRole("ADMIN")
 
-                // Other authenticated requests
                 .anyRequest().authenticated()
             )
 
