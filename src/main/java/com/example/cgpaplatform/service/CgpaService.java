@@ -1,3 +1,4 @@
+
 package com.example.cgpaplatform.service;
 
 import java.util.List;
@@ -22,6 +23,16 @@ public class CgpaService {
         this.subjectRepository = subjectRepository;
     }
 
+    // Calculate SGPA for one semester
+    public Double calculateSgpa(Long semesterId) {
+
+        List<subject> subjects =
+                subjectRepository.findBySemester_Id(semesterId);
+
+        return calculateAverage(subjects);
+    }
+
+    // Calculate CGPA for all semesters of a student
     public Double calculateCgpa(Long studentId) {
 
         List<semester> semesters =
@@ -37,13 +48,12 @@ public class CgpaService {
 
             for (subject s : subjects) {
 
-                if (s.getCredits() != null
+                if (s.getMarks() != null
+                        && s.getCredits() != null
                         && s.getGradePoint() != null) {
 
                     totalCredits += s.getCredits();
-
-                    totalPoints +=
-                            s.getCredits() * s.getGradePoint();
+                    totalPoints += s.getCredits() * s.getGradePoint();
                 }
             }
         }
@@ -53,6 +63,33 @@ public class CgpaService {
                     "No completed subjects found for this student");
         }
 
-        return totalPoints / totalCredits;
+        return Math.round((totalPoints / totalCredits) * 100.0) / 100.0;
+    }
+
+    // Common SGPA calculation
+    private Double calculateAverage(List<subject> subjects) {
+
+        double totalCredits = 0;
+        double totalPoints = 0;
+
+        for (subject s : subjects) {
+
+            if (s.getMarks() != null
+                    && s.getCredits() != null
+                    && s.getGradePoint() != null) {
+
+                totalCredits += s.getCredits();
+                totalPoints += s.getCredits() * s.getGradePoint();
+            }
+        }
+
+        if (totalCredits == 0) {
+            throw new RuntimeException(
+                    "No completed subjects found");
+        }
+
+        double result = totalPoints / totalCredits;
+        System.out.println("SGPA before rounding: " + result);
+        return Math.round((totalPoints / totalCredits) * 100.0) / 100.0;
     }
 }

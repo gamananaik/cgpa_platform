@@ -1,3 +1,4 @@
+
 package com.example.cgpaplatform.entity;
 
 import jakarta.persistence.Entity;
@@ -5,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "students")
@@ -19,6 +22,10 @@ public class student {
     private String email;
     private String department;
     private Integer currentSemester;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 
     public student() {
     }
@@ -69,5 +76,13 @@ public class student {
 
     public void setCurrentSemester(Integer currentSemester) {
         this.currentSemester = currentSemester;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

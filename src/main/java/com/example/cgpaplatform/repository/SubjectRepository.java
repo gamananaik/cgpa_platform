@@ -1,4 +1,3 @@
-
 package com.example.cgpaplatform.repository;
 
 import java.util.List;
@@ -13,4 +12,5 @@ public interface SubjectRepository extends JpaRepository<subject, Long> {
 
     List<subject> findBySemester_Id(Long semesterId);
 
+    List<subject> findBySemester_Student_Id(Long studentId);
 }
